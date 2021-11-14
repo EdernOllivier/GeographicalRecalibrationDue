@@ -145,10 +145,10 @@ void displayCalStatus(void)
 }
 
 /*****************************************************************************/
-//  Function:  Get the accelemeter of the x/y/z axis. 
+//  Function:  Get the accelemeter of the x/y/z axis.
 //  Hardware:  Grove - 3-Axis Analog Accelerometer
 //  Arduino IDE: Arduino-1.0
-//  Author:  Frankie.Chu    
+//  Author:  Frankie.Chu
 //  Date:    Jan 11,2013
 //  Version: v1.0
 //  by www.seeedstudio.com
@@ -202,15 +202,15 @@ void setup()
   mySerial.println(PMTK_Q_RELEASE);
 
   // for the sensor of orientation
-//  Serial.begin(115200);
-//  Serial.println("Orientation Sensor Test"); Serial.println("");
+  //  Serial.begin(115200);
+  //  Serial.println("Orientation Sensor Test"); Serial.println("");
 
-  /* Initialise the sensor */  
-  if(!bno.begin())
+  /* Initialise the sensor */
+  if (!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
+//    while (1);
   }
 
   delay(1000);
@@ -224,14 +224,14 @@ void setup()
   bno.setExtCrystalUse(true);
 
   delay(1000);
-//  analogReference(EXTERNAL);
+  //  analogReference(EXTERNAL);
   accelerometer.begin();
 }
 
 // ################################################################################### //
 
 class SimpleKalman {
-private:
+  private:
     double _time1;
     double _time2;
 
@@ -243,13 +243,13 @@ private:
     double _estimatedPosition;
     double _estimatedVelocity;
     double _heading;
-    
+
     float _processErrorQ;
     float _sensorErrorR;
     float _translationH;
 
     float _P[2][2]; //error covariance matrix;
-public:
+  public:
     SimpleKalman();
 
     float GPStokm(float lon1, float lon2, float lat1, float lat2);
@@ -284,9 +284,9 @@ SimpleKalman::SimpleKalman() {
   _estimatedVelocity = 0;
   _heading = 0;
 
-// Covariance, Variance, and Error estimates
-//are preset to specifications roughly suitable for my project,
-//tuning through "Setters" is encourages
+  // Covariance, Variance, and Error estimates
+  //are preset to specifications roughly suitable for my project,
+  //tuning through "Setters" is encourages
   _processErrorQ = 0.03;
   _sensorErrorR = 0.1;
   _translationH = 1;
@@ -303,13 +303,13 @@ SimpleKalman::SimpleKalman() {
 float SimpleKalman::GPStokm(float lon1, float lon2, float lat1, float lat2) {
   float dlon = lon2 - lon1;
   float dlat = lat2 - lat1;
-  float a = square(sin(dlat*0.5)) + cos(lat1)*cos(lat2)*square(sin(dlon*0.5));
-  float c = 2 * atan2(sqrt(a),sqrt(1-a));
-  float d = EARTH_RADIUS * c /1000;
+  float a = square(sin(dlat * 0.5)) + cos(lat1) * cos(lat2) * square(sin(dlon * 0.5));
+  float c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  float d = EARTH_RADIUS * c / 1000;
   return d;
 };
 
-float SimpleKalman::mpermillis_to_ms(float m_millis){
+float SimpleKalman::mpermillis_to_ms(float m_millis) {
   float ms = m_millis * 1000;
 };
 
@@ -322,71 +322,71 @@ void SimpleKalman::setPosition(double pos) {
   //this->_position = pos;
 };
 
-void SimpleKalman::setVelocity(double velocity){
+void SimpleKalman::setVelocity(double velocity) {
   this->_velocity = velocity;
 };
 
-void SimpleKalman::setHeading(double heading){
+void SimpleKalman::setHeading(double heading) {
   this->_heading = heading;
 };
 
-void SimpleKalman::setEstimatedCovariance(float cov){
+void SimpleKalman::setEstimatedCovariance(float cov) {
   this->_P[0][0] = cov;
   this->_P[1][1] = cov;
 };
 
-void SimpleKalman::setProcessError(float err_q){
+void SimpleKalman::setProcessError(float err_q) {
   this->_processErrorQ = err_q;
 };
 
-void SimpleKalman::setSensorError(float err_r){
+void SimpleKalman::setSensorError(float err_r) {
   this->_sensorErrorR = err_r;
 };
 
-void SimpleKalman::setTranslation(float h){
+void SimpleKalman::setTranslation(float h) {
   this->_translationH = h;
 };
 
 
 //Getters ----------------------------
 
-double SimpleKalman::getPosition(){
+double SimpleKalman::getPosition() {
   return this->_estimatedPosition;
 };
 
-double SimpleKalman::getVelocity(){
+double SimpleKalman::getVelocity() {
   return this->_estimatedVelocity;
 };
 
-double SimpleKalman::getHeading(){
+double SimpleKalman::getHeading() {
   return this->_heading;
 };
 
 
 //Calculations ---------------------
 
-void SimpleKalman::predictEstimate(double u, double t1){
+void SimpleKalman::predictEstimate(double u, double t1) {
   _time1 = t1; //time of accelerometer sample
   double dt = _time2 - _time1; //time since previous location update sample
 
   _lastPosition = _position;
   _lastVelocity = _velocity;
   //Predict xhat
-  _position = _lastPosition + _lastVelocity*dt + 0.5*dt*dt*u;
-  _velocity = _lastVelocity + dt*u;
+  _position = _lastPosition + _lastVelocity * dt + 0.5 * dt * dt * u;
+  _velocity = _lastVelocity + dt * u;
 
   //Update Covariance Matrix
   // Pn = A(Pn-1)AT + Q
   //[1 dt][p00 p01][1  0]
   //[0 1 ][p10 p11][dt 1]
-  _P[0][0] = _P[0][0] + _P[1][0]*dt + _P[0][1]*dt + _P[1][1]*dt*dt + _processErrorQ;
-  _P[0][1] = _P[1][1]*dt + _P[0][1];
-  _P[1][0] = _P[1][0] + _P[1][1]*dt;
+  _P[0][0] = _P[0][0] + _P[1][0] * dt + _P[0][1] * dt + _P[1][1] * dt * dt + _processErrorQ;
+  _P[0][1] = _P[1][1] * dt + _P[0][1];
+  _P[1][0] = _P[1][0] + _P[1][1] * dt;
   _P[1][1] = _P[1][1] + _processErrorQ;
 };
 
 
-void SimpleKalman::updateEstimate(double pos, double t2){
+void SimpleKalman::updateEstimate(double pos, double t2) {
 
   //input processing step
   double dt = t2 - _time2; //Delta T from location sample before this
@@ -396,25 +396,25 @@ void SimpleKalman::updateEstimate(double pos, double t2){
 
   //Observation Step --------------------------
   double _positionInnovation = pos - _position;
-  double _velocityInnovation = velocity -_velocity;
+  double _velocityInnovation = velocity - _velocity;
 
-  double _S[2][2] = {{0,0},{0,0}};
+  double _S[2][2] = {{0, 0}, {0, 0}};
   _S[0][0] = _P[0][0] + _sensorErrorR;
   _S[0][1] = _P[0][1];
   _S[1][0] = _P[1][0];
   _S[1][1] = _P[1][1] + _sensorErrorR;
 
   //Kalman Gain
-  double _K[2][2] = {{0,0},{0,0}};
+  double _K[2][2] = {{0, 0}, {0, 0}};
   //(P)(S^-1) expanded
-  _K[0][0] = (_P[0][0]*_S[1][1] - _P[0][1]*_S[1][0] )*( 1/( (_S[0][0]*_S[1][1])-(_S[0][1]*_S[1][0]) ) );
-  _K[0][1] = (-1*_P[0][0]*_S[0][1] + _P[0][1]*_S[0][0] )*( 1/( (_S[0][0]*_S[1][1])-(_S[0][1]*_S[1][0]) ) );
-  _K[1][0] = (_P[1][0]*_S[1][1] - _P[1][1]*_S[1][0] )*( 1/( (_S[0][0]*_S[1][1])-(_S[0][1]*_S[1][0]) ) );
-  _K[1][1] = (-1*_P[1][0]*_S[0][1] + _P[1][1]*_S[0][0] )*( 1/( (_S[0][0]*_S[1][1])-(_S[0][1]*_S[1][0]) ) );
+  _K[0][0] = (_P[0][0] * _S[1][1] - _P[0][1] * _S[1][0] ) * ( 1 / ( (_S[0][0] * _S[1][1]) - (_S[0][1] * _S[1][0]) ) );
+  _K[0][1] = (-1 * _P[0][0] * _S[0][1] + _P[0][1] * _S[0][0] ) * ( 1 / ( (_S[0][0] * _S[1][1]) - (_S[0][1] * _S[1][0]) ) );
+  _K[1][0] = (_P[1][0] * _S[1][1] - _P[1][1] * _S[1][0] ) * ( 1 / ( (_S[0][0] * _S[1][1]) - (_S[0][1] * _S[1][0]) ) );
+  _K[1][1] = (-1 * _P[1][0] * _S[0][1] + _P[1][1] * _S[0][0] ) * ( 1 / ( (_S[0][0] * _S[1][1]) - (_S[0][1] * _S[1][0]) ) );
 
   //State Update
-  _estimatedPosition = _position + (_K[0][0]*_positionInnovation + _K[0][1]*_velocityInnovation);
-  _estimatedVelocity = _velocity + (_K[1][0]*_positionInnovation + _K[1][1]*_velocityInnovation);
+  _estimatedPosition = _position + (_K[0][0] * _positionInnovation + _K[0][1] * _velocityInnovation);
+  _estimatedVelocity = _velocity + (_K[1][0] * _positionInnovation + _K[1][1] * _velocityInnovation);
 };
 
 // ################################################################################### //
@@ -461,65 +461,65 @@ void loop()                     // run over and over again
     if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
       return;  // we can fail to parse a sentence in which case we should just wait for another
   }
-/*
-  // if millis() or timer wraps around, we'll just reset it
-  if (timer > millis())  timer = millis();
+  /*
+    // if millis() or timer wraps around, we'll just reset it
+    if (timer > millis())  timer = millis();
 
-  // approximately every 2 seconds or so, print out the current stats
-  if (millis() - timer > 2000) {
-    timer = millis(); // reset the timer
+    // approximately every 2 seconds or so, print out the current stats
+    if (millis() - timer > 2000) {
+      timer = millis(); // reset the timer
 
-    Serial.print("\nTime: ");
-    if (GPS.hour < 10) { Serial.print('0'); }
-    Serial.print(GPS.hour, DEC); Serial.print(':');
-    if (GPS.minute < 10) { Serial.print('0'); }
-    Serial.print(GPS.minute, DEC); Serial.print(':');
-    if (GPS.seconds < 10) { Serial.print('0'); }
-    Serial.print(GPS.seconds, DEC); Serial.print('.');
-    if (GPS.milliseconds < 10) {
-      Serial.print("00");
-    } else if (GPS.milliseconds > 9 && GPS.milliseconds < 100) {
-      Serial.print("0");
+      Serial.print("\nTime: ");
+      if (GPS.hour < 10) { Serial.print('0'); }
+      Serial.print(GPS.hour, DEC); Serial.print(':');
+      if (GPS.minute < 10) { Serial.print('0'); }
+      Serial.print(GPS.minute, DEC); Serial.print(':');
+      if (GPS.seconds < 10) { Serial.print('0'); }
+      Serial.print(GPS.seconds, DEC); Serial.print('.');
+      if (GPS.milliseconds < 10) {
+        Serial.print("00");
+      } else if (GPS.milliseconds > 9 && GPS.milliseconds < 100) {
+        Serial.print("0");
+      }
+      Serial.println(GPS.milliseconds);
+      Serial.print("Date: ");
+      Serial.print(GPS.day, DEC); Serial.print('/');
+      Serial.print(GPS.month, DEC); Serial.print("/20");
+      Serial.println(GPS.year, DEC);
+      Serial.print("Fix: "); Serial.print((int)GPS.fix);
+      Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
+      if (GPS.fix) {
+        Serial.print("Location: ");
+        Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
+        Serial.print(", ");
+        Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
+
+        Serial.print("Speed (knots): "); Serial.println(GPS.speed);
+        Serial.print("Angle: "); Serial.println(GPS.angle);
+        Serial.print("Altitude: "); Serial.println(GPS.altitude);
+        Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+      }
     }
-    Serial.println(GPS.milliseconds);
-    Serial.print("Date: ");
-    Serial.print(GPS.day, DEC); Serial.print('/');
-    Serial.print(GPS.month, DEC); Serial.print("/20");
-    Serial.println(GPS.year, DEC);
-    Serial.print("Fix: "); Serial.print((int)GPS.fix);
-    Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
-    if (GPS.fix) {
-      Serial.print("Location: ");
-      Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
-      Serial.print(", ");
-      Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
 
-      Serial.print("Speed (knots): "); Serial.println(GPS.speed);
-      Serial.print("Angle: "); Serial.println(GPS.angle);
-      Serial.print("Altitude: "); Serial.println(GPS.altitude);
-      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-    }
-  }
-  
-  // Print the estimated position with the heading angle
-  Serial.println("");
-  Serial.println("position of Y/Z: ");
-  Serial.print(One.getPosition());
-  Serial.println("");
-  Serial.println("heading of X: ");
-  Serial.print(One.getHeading());
-*/  
+    // Print the estimated position with the heading angle
+    Serial.println("");
+    Serial.println("position of Y/Z: ");
+    Serial.print(One.getPosition());
+    Serial.println("");
+    Serial.println("heading of X: ");
+    Serial.print(One.getHeading());
+  */
   /* Display the floating point data */
   Serial.println("");
   Serial.print("Fix: "); Serial.print((int)GPS.fix);
-/*  
-  Serial.print("\tX: ");
-  Serial.print(event.orientation.x, 4);
-  Serial.print("\tY: ");
-  Serial.print(event.orientation.y, 4);
-  Serial.print("\tZ: ");
-  Serial.print(event.orientation.z, 4);
-*/
+  /*
+    Serial.print("\tX: ");
+    Serial.print(event.orientation.x, 4);
+    Serial.print("\tY: ");
+    Serial.print(event.orientation.y, 4);
+    Serial.print("\tZ: ");
+    Serial.print(event.orientation.z, 4);
+  */
   Serial.println("");
 
   // Set the heading angle with the distance of travel
@@ -536,18 +536,18 @@ void loop()                     // run over and over again
     lat2 = GPS.lat;
 
     // Set the distance of travel
-    distance = One.GPStokm(lon1, lon2, lat1, lat2) *1000;
+    distance = One.GPStokm(lon1, lon2, lat1, lat2) * 1000;
     Serial.print("Distance: "); Serial.println(distance);
     Serial.print("Speed (knots): "); Serial.println(GPS.speed);
     Serial.print("Angle: "); Serial.println(GPS.angle);
     Serial.print("Altitude: "); Serial.println(GPS.altitude);
     Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 
-    if(distance > 0)
+    if (distance > 0)
       // Update with the position of travel of the GPS
       One.updateEstimate(One.getPosition() + distance, timer);
   }
-  
+
   //  Serial.print("\nRead the data of the GPS");
   c = GPS.read();
   c = GPS.read();
@@ -576,27 +576,27 @@ void loop()                     // run over and over again
 
   // for the sensor of orientation
   /* Optional: Display calibration status */
-//  displayCalStatus();
+  //  displayCalStatus();
 
   /* Optional: Display sensor status (debug only) */
-//  displaySensorStatus();
+  //  displaySensorStatus();
 
   /* New line for the next sample */
   Serial.println("");
-//  Serial.print("\n");
+  //  Serial.print("\n");
 
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
   // for the accelerometer
-  int x,y,z;
-  accelerometer.getXYZ(&x,&y,&z);
+  int x, y, z;
+  accelerometer.getXYZ(&x, &y, &z);
   Serial.println("value of X/Y/Z: ");
   Serial.println(x);
   Serial.println(y);
   Serial.println(z);
-  float ax,ay,az;
-  accelerometer.getAcceleration(&ax,&ay,&az);
+  float ax, ay, az;
+  accelerometer.getAcceleration(&ax, &ay, &az);
   Serial.println("acceleration of X/Y/Z: ");
   Serial.print(ax);
   Serial.println(" g");
@@ -604,17 +604,17 @@ void loop()                     // run over and over again
   Serial.println(" g");
   Serial.print(az);
   Serial.println(" g");
-//  delay(500);
+  //  delay(500);
 
   /* New line for the next sample */
   Serial.println("");
-//  Serial.print("\n");
+  //  Serial.print("\n");
 
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
   // Estimate the next position with the acceleration
-  One.predictEstimate(sqrt((ay-5.02)*9.81*(ay-5.02)*9.81 + (az-4.84)*9.81*(az-4.84)*9.81), timer);
+  One.predictEstimate(sqrt((ay - 5.02) * 9.81 * (ay - 5.02) * 9.81 + (az - 4.84) * 9.81 * (az - 4.84) * 9.81), timer);
 
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);

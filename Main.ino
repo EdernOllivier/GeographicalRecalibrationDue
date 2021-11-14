@@ -1,3 +1,4 @@
+//#define Wire Wire1
 // Test code for Adafruit GPS modules using MTK3329/MTK3339 driver
 //
 // This code shows how to listen to the GPS module in an interrupt
@@ -202,9 +203,9 @@ void setup()
 
   // for the sensor of orientation
 //  Serial.begin(115200);
-  Serial.println("Orientation Sensor Test"); Serial.println("");
+//  Serial.println("Orientation Sensor Test"); Serial.println("");
 
-  /* Initialise the sensor */
+  /* Initialise the sensor */  
   if(!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
@@ -511,12 +512,14 @@ void loop()                     // run over and over again
   /* Display the floating point data */
   Serial.println("");
   Serial.print("Fix: "); Serial.print((int)GPS.fix);
+/*  
   Serial.print("\tX: ");
   Serial.print(event.orientation.x, 4);
   Serial.print("\tY: ");
   Serial.print(event.orientation.y, 4);
   Serial.print("\tZ: ");
   Serial.print(event.orientation.z, 4);
+*/
   Serial.println("");
 
   // Set the heading angle with the distance of travel

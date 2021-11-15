@@ -202,26 +202,26 @@ void setup()
   mySerial.println(PMTK_Q_RELEASE);
 
   // for the sensor of orientation
-  //  Serial.begin(115200);
-  //  Serial.println("Orientation Sensor Test"); Serial.println("");
+  Serial.begin(115200);
+  Serial.println("Orientation Sensor Test"); Serial.println("");
 
   /* Initialise the sensor */
-  if (!bno.begin())
-  {
+//  if (!bno.begin())
+//  {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+//    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
 //    while (1);
-  }
+//  }
 
   delay(1000);
 
   /* Display some basic information on this sensor */
-  displaySensorDetails();
+//  displaySensorDetails();
 
   /* Optional: Display current status */
-  displaySensorStatus();
+//  displaySensorStatus();
 
-  bno.setExtCrystalUse(true);
+//  bno.setExtCrystalUse(true);
 
   delay(1000);
   //  analogReference(EXTERNAL);
@@ -431,7 +431,7 @@ void loop()                     // run over and over again
   // for the sensor of orientation
   /* Get a new sensor event */
   sensors_event_t event;
-  bno.getEvent(&event);
+//  bno.getEvent(&event);
 
   // for the GPS
   char c = GPS.read();
@@ -512,14 +512,12 @@ void loop()                     // run over and over again
   /* Display the floating point data */
   Serial.println("");
   Serial.print("Fix: "); Serial.print((int)GPS.fix);
-  /*
-    Serial.print("\tX: ");
-    Serial.print(event.orientation.x, 4);
-    Serial.print("\tY: ");
-    Serial.print(event.orientation.y, 4);
-    Serial.print("\tZ: ");
-    Serial.print(event.orientation.z, 4);
-  */
+  Serial.print("\tX: ");
+  Serial.print(event.orientation.x, 4);
+  Serial.print("\tY: ");
+  Serial.print(event.orientation.y, 4);
+  Serial.print("\tZ: ");
+  Serial.print(event.orientation.z, 4);
   Serial.println("");
 
   // Set the heading angle with the distance of travel
@@ -586,7 +584,7 @@ void loop()                     // run over and over again
   //  Serial.print("\n");
 
   /* Wait the specified delay before requesting nex data */
-  delay(BNO055_SAMPLERATE_DELAY_MS);
+//  delay(BNO055_SAMPLERATE_DELAY_MS);
 
   // for the accelerometer
   int x, y, z;
@@ -611,11 +609,11 @@ void loop()                     // run over and over again
   //  Serial.print("\n");
 
   /* Wait the specified delay before requesting nex data */
-  delay(BNO055_SAMPLERATE_DELAY_MS);
+//  delay(BNO055_SAMPLERATE_DELAY_MS);
 
   // Estimate the next position with the acceleration
-  One.predictEstimate(sqrt((ay - 5.02) * 9.81 * (ay - 5.02) * 9.81 + (az - 4.84) * 9.81 * (az - 4.84) * 9.81), timer);
+//  One.predictEstimate(sqrt((ay - 5.02) * 9.81 * (ay - 5.02) * 9.81 + (az - 4.84) * 9.81 * (az - 4.84) * 9.81), timer);
 
   /* Wait the specified delay before requesting nex data */
-  delay(BNO055_SAMPLERATE_DELAY_MS);
+//  delay(BNO055_SAMPLERATE_DELAY_MS);
 }

@@ -7,6 +7,7 @@ Maybe that the patch to apply to hybride it has not succeeded.
 
 Please do,
 
+sudo chmod 666 /dev/ttyACM0
 sudo tail -f /dev/ttyACM0
 
 Then,
@@ -20,3 +21,5 @@ pip install pyserial
 Also,
 
 python3 IMU2GPS.py
+
+Then, press return to see the GPS data from the serial port of the Arduino USB UNO with Adafruit GPS board.

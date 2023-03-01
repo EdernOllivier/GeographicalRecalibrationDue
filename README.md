@@ -8,6 +8,7 @@ Maybe that the patch to apply to hybride it has not succeeded.
 Please do,
 
 sudo chmod 666 /dev/ttyACM0
+
 sudo tail -f /dev/ttyACM0
 
 Then,
